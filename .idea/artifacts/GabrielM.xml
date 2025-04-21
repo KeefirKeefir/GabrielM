@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="GabrielM">
+    <output-path>$PROJECT_DIR$/out/artifacts/GabrielM</output-path>
+    <root id="archive" name="GabrielM.jar">
+      <element id="archive" name="GabrielM.jar">
+        <element id="module-output" name="GabrielM" />
+      </element>
+      <element id="directory" name="resources">
+        <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources" />
+      </element>
+    </root>
+  </artifact>
+</component>
