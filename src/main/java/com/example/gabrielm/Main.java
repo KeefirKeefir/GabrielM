@@ -13,57 +13,83 @@ import javafx.scene.web.WebView;
 
 import java.net.URL;
 
+// naming conventions
+// FULL_CAPS for all static fields
+// m_camelCase for all non-static member values (private and public)
+// v_camelCase for local values
+// i_camelCase for parameters/inputs
+// S_PascalCase for scene holder classes
 
 public class Main extends Application {
+
+   public static Stage STAGE;
+   public static Scene MAIN_SCENE;
+
     @Override
-    public void start(Stage stage) {
+    public void start(Stage i_stage) {
+       STAGE = i_stage;
+
        Paths.init();
+       S_TopicBrowser.SCENE.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
-       HBox hbox = new HBox(10);
-       Button button1 = new Button("Make Html");
-       Button button2 = new Button("Button 1");
-       hbox.getChildren().addAll(button1, button2);
-       hbox.setAlignment(Pos.CENTER);
+       HBox v_hbox = new HBox(10);
+       Button v_makeHtmlButton = new Button("Make Html");
+       Button v_openBrowseSceneButton = new Button("Button 2");
+       v_hbox.getChildren().addAll(v_makeHtmlButton, v_openBrowseSceneButton);
+       v_hbox.setAlignment(Pos.CENTER);
 
-       VBox formVBox = new VBox(10);
-       Label nameLabel = new Label("Name:");
-       TextField nameField = new TextField();
+       VBox v_formVBox = new VBox(10);
+       Label v_nameLabel = new Label("Name:");
+       TextField v_nameField = new TextField();
 
-       formVBox.getChildren().addAll(nameLabel, nameField);
-       formVBox.setAlignment(Pos.CENTER);
-       nameField.setMaxWidth(200);
+       v_formVBox.getChildren().addAll(v_nameLabel, v_nameField);
+       v_formVBox.setAlignment(Pos.CENTER);
+       v_nameField.setMaxWidth(200);
 
-       WebView webView = new WebView();
-       URL url = getClass().getResource("/topics/example.html");
+       WebView v_webView = new WebView();
+       URL v_url = getClass().getResource("/topics/example.html");
        //File file = new File("../../topics/example.html");
-       webView.getEngine().load(url.toString());
-       webView.setMaxWidth(500);
-       webView.setMaxHeight(500);
+       v_webView.getEngine().load(v_url.toString());
+       v_webView.setMaxWidth(500);
+       v_webView.setMaxHeight(500);
 
-       VBox mainVBox = new VBox(20);
-       mainVBox.getChildren().addAll(hbox, formVBox, webView);
-       mainVBox.setAlignment(Pos.TOP_CENTER);
-       Scene scene = new Scene(mainVBox, 800, 600);
+       VBox v_mainVBox = new VBox(20);
+       v_mainVBox.getChildren().addAll(v_hbox, v_formVBox, v_webView);
+       v_mainVBox.setAlignment(Pos.TOP_CENTER);
+       MAIN_SCENE = new Scene(v_mainVBox, 800, 600);
 
-       VBox vbox2 = new VBox(20);
-       Scene scene2 = new Scene(vbox2, 800, 600);
-       Button button3 = new Button("Change back");
-       button3.setOnAction(e -> stage.setScene(scene));
-       vbox2.getChildren().add(button3);
-       vbox2.setAlignment(Pos.CENTER);
+       VBox v_vbox2 = new VBox(20);
+       Scene v_scene2 = new Scene(v_vbox2, 800, 600);
+       Button v_button3 = new Button("Change back");
+       v_button3.setOnAction(e -> SceneChanger.change(MAIN_SCENE));
+       v_vbox2.getChildren().add(v_button3);
+       v_vbox2.setAlignment(Pos.CENTER);
 
-       Button button4 = new Button("change scene");
-       hbox.getChildren().add(button4);
-       button4.setOnAction(e -> stage.setScene(scene2));
+       Button v_button4 = new Button("change scene");
+       v_hbox.getChildren().add(v_button4);
+       v_button4.setOnAction(e -> {
+          SceneChanger.change(v_scene2);
+          S_TopicBrowser.clear();
+       });
 
-       button1.setOnAction(actionEvent -> HtmlGenerator.generateHtmlFiles());
+       v_makeHtmlButton.setOnAction(actionEvent -> {
+          HtmlGenerator.generateHtmlFiles();
+          S_TopicBrowser.refresh();
+       });
 
-       stage.setTitle("Testing");
-       stage.setScene(scene);
-       stage.show();
+       v_openBrowseSceneButton.setOnAction(actionEvent -> {
+          SceneChanger.change(S_TopicBrowser.SCENE);
+       });
+
+       S_TopicBrowser.init();
+       S_Topic.init();
+
+       i_stage.setTitle("Testing");
+       SceneChanger.change(MAIN_SCENE);
+       i_stage.show();
     }
 
     public static void main(String[] args) {
-        launch(args); // starts JavaFX app
+        launch(args);
     }
 }

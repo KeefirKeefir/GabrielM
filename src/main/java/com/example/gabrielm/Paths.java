@@ -2,26 +2,28 @@ package com.example.gabrielm;
 import java.io.File;
 
 public class Paths {
+    private Paths() {}
+
     public static boolean DEVMODE = true;
 
-    public static File xBaseDir;
-    public static File xMdFolder;
-    public static File xHtmlFolder;
-    public static File xImages;
+    public static File ROOT_DIR;
+    public static File MD_FOLDER;
+    public static File HTML_FOLDER;
+    public static File IMAGES;
 
     private static void refreshFolderPaths() {
-        xMdFolder = new File(xBaseDir, "mdFiles");
-        xHtmlFolder = new File(xBaseDir, "topics");
-        xImages = new File(xBaseDir, "images");
+        MD_FOLDER = new File(ROOT_DIR, "mdFiles");
+        HTML_FOLDER = new File(ROOT_DIR, "topics");
+        IMAGES = new File(ROOT_DIR, "images");
 
-        if (!xMdFolder.exists() || !xMdFolder.isDirectory()) {
+        if (!MD_FOLDER.exists() || !MD_FOLDER.isDirectory()) {
             throw new IllegalStateException(
-                    "Failed to find mdFiles folder at " + xMdFolder.getAbsolutePath() +
+                    "Failed to find mdFiles folder at " + MD_FOLDER.getAbsolutePath() +
                             " (DEVMODE=" + DEVMODE + ")");
         }
-        if (!xHtmlFolder.exists() || !xHtmlFolder.isDirectory()) {
+        if (!HTML_FOLDER.exists() || !HTML_FOLDER.isDirectory()) {
             throw new IllegalStateException(
-                    "Failed to find topics folder at " + xHtmlFolder.getAbsolutePath() +
+                    "Failed to find topics folder at " + HTML_FOLDER.getAbsolutePath() +
                             " (DEVMODE=" + DEVMODE + ")");
         }
         System.out.println("success - found Folders");
@@ -29,24 +31,24 @@ public class Paths {
 
     private static void setPathsDev() {
         try {
-            xBaseDir = new File("D:/programming/GabrielMout");
+            ROOT_DIR = new File("D:/programming/GabrielMout");
             System.out.println("DEVMODE");
         }
         catch (Exception e) {
-            xBaseDir = new File(".");
+            ROOT_DIR = new File(".");
         }
     }
     private static void setPathsProd() {
         try {
-            File jarFile = new File(Paths.class.getProtectionDomain()
+            File v_jarFile = new File(Paths.class.getProtectionDomain()
                     .getCodeSource()
                     .getLocation()
                     .toURI());
-            xBaseDir = jarFile.getParentFile();
+            ROOT_DIR = v_jarFile.getParentFile();
             System.out.println("PRODMODE");
         }
         catch (Exception e) {
-            xBaseDir = new File(".");
+            ROOT_DIR = new File(".");
         }
     }
 
@@ -62,11 +64,11 @@ public class Paths {
 
     public static void changePaths(String newBaseDir) {
         try {
-            xBaseDir = new File(newBaseDir);
+            ROOT_DIR = new File(newBaseDir);
             System.out.println("changing paths");
         }
         catch (Exception e) {
-            xBaseDir = new File(".");
+            ROOT_DIR = new File(".");
         }
         refreshFolderPaths();
     }

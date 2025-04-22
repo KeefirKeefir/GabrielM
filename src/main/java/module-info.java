@@ -11,6 +11,8 @@ module com.example.gabrielm {
     requires flexmark.util.misc;
     requires flexmark.ext.gfm.strikethrough;
     requires com.ibm.icu;
+    requires openhtmltopdf.core;
+    requires java.logging;
 
     opens com.example.gabrielm to javafx.fxml;
     exports com.example.gabrielm;

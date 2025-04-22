@@ -1,63 +1,60 @@
 package com.example.gabrielm;
 import java.io.File;
 import java.io.IOException;
-import java.net.FileNameMap;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javafx.css.Match;
-import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
 
 public class HtmlGenerator {
+    private HtmlGenerator() {}
+
     public static void generateHtmlFiles() {
 
-        File[] axFiles = Paths.xMdFolder.listFiles((dir, name) -> name.endsWith(".md"));
-        if (axFiles == null) {
+        File[] v_files = Paths.MD_FOLDER.listFiles((dir, name) -> name.endsWith(".md"));
+        if (v_files == null) {
             System.err.println("No markdown files found");
             return;
         }
 
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        Parser v_parser = Parser.builder().build();
+        HtmlRenderer v_renderer = HtmlRenderer.builder().build();
 
-        String kCommentRegex = "<!--|-->";
-        Pattern xPattern = Pattern.compile(kCommentRegex);
+        String v_commentRegex = "<!--|-->";
+        Pattern v_pattern = Pattern.compile(v_commentRegex);
 
-        for (File xFile : axFiles) {
+        for (File v_file : v_files) {
             try {
-                String xFileName = xFile.getName();
-                String xFileNameNoExtension = xFileName.substring(0, xFileName.lastIndexOf('.'));
-                String xMarkdown = Files.readString(xFile.toPath());
+                String v_fileName = v_file.getName();
+                String v_fileNameNoExtension = v_fileName.substring(0, v_fileName.lastIndexOf('.'));
+                String v_markdown = Files.readString(v_file.toPath());
 
-                String xHtmlContent = renderer.render(parser.parse(xMarkdown));
+                String v_htmlContent = v_renderer.render(v_parser.parse(v_markdown));
 
-                Matcher xMatcher = xPattern.matcher(xHtmlContent);
-                String xHtmlBody = xMatcher.replaceAll("");
+                Matcher v_matcher = v_pattern.matcher(v_htmlContent);
+                String v_htmlBody = v_matcher.replaceAll("");
 
-                String xHtmlOutput = kHtmlHead + xHtmlBody + kHtmlTail;
+                String v_htmlOutput = HTML_HEAD + v_htmlBody + HTML_TAIL;
 
-                if (!Paths.xHtmlFolder.exists()) {
-                    Paths.xHtmlFolder.mkdirs();
+                if (!Paths.HTML_FOLDER.exists()) {
+                    Paths.HTML_FOLDER.mkdirs();
                 }
 
-                File xOutFile = new File(Paths.xHtmlFolder, xFileNameNoExtension + ".html");
-                Files.writeString(xOutFile.toPath(), xHtmlOutput);
+                File v_outFile = new File(Paths.HTML_FOLDER, v_fileNameNoExtension + ".html");
+                Files.writeString(v_outFile.toPath(), v_htmlOutput);
 
-                System.out.println("Generated html file: " + xOutFile.getAbsolutePath());
+                System.out.println("Generated html file: " + v_outFile.getAbsolutePath());
             }
             catch (IOException e) {
-                System.err.println("Error processing file: "  + xFile.getAbsolutePath() + e.getMessage());
+                System.err.println("Error processing file: "  + v_file.getAbsolutePath() + e.getMessage());
                 e.printStackTrace();
             }
         }
     }
-    private static String kHtmlHead = "<!DOCTYPE html>\n" +
+    private static final String HTML_HEAD = "<!DOCTYPE html>\n" +
             "<html lang=\"en\">\n" +
             "<head>\n" +
             "    <meta charset=\"UTF-8\">\n" +
@@ -67,5 +64,5 @@ public class HtmlGenerator {
             "    </script>\n" +
             "</head>\n" +
             "<body>\n";
-    private static String kHtmlTail = "</body>\n" + "</html>";
+    private static final String HTML_TAIL = "</body>\n" + "</html>";
 }

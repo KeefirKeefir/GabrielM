@@ -1,0 +1,15 @@
+.topic-button {
+    -fx-text-fill: transparent;
+    -fx-background-color: lightgray;
+    -fx-border-color: gray;
+    -fx-border-width: 1;
+}
+
+.topic-button:hover {
+    -fx-background-color: #ddd;
+}
+
+.topic-button:pressed {
+    -fx-background-color: #bbb;
+    -fx-border-color: darkgray;
+}
