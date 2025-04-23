@@ -1,65 +1,78 @@
 package com.example.gabrielm;
 
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-public class S_TopicBrowser {
-    private S_TopicBrowser() {}
+public class S_TopicBrowser extends S_Base {
 
-    private static FlowPane TOPIC_PANE;
-    static VBox VBOX = new VBox(20);
-    public static Scene SCENE = new Scene(VBOX);
+    private VBox m_vbox;
 
-    public static ArrayList<TopicCard> CARDS_LIST = new ArrayList<TopicCard>();
+    private FlowPane m_topicsPane;
+    private B_Button m_backButton;
 
-    static Button BACK_BUTTON;
+    public S_TopicBrowser() {
+        m_vbox = new VBox();
+        m_topicsPane = new FlowPane();
 
-    public static void init() {
-        TOPIC_PANE = new FlowPane(20, 20);
-        TOPIC_PANE.setAlignment(Pos.CENTER);
+        m_topicsPane.getStyleClass().add("topic-pane");
 
-        BACK_BUTTON = new Button("back");
-        BACK_BUTTON.setOnAction(actionEvent -> {
-            SceneChanger.change(Main.MAIN_SCENE);
+        m_backButton = new B_Button("back", e -> {
+            Views.change(Views.HOME);
         });
 
-        //xVBox = new VBox(20, xBackButton, xTopicPane);
-        VBOX.getChildren().addAll(BACK_BUTTON, TOPIC_PANE);
-        VBOX.setAlignment(Pos.TOP_CENTER);
+        m_vbox.getChildren().addAll(m_backButton, m_topicsPane);
+        m_vbox.getStyleClass().add("basic-vbox");
 
-        refresh();
+        initCards();
+
+        this.getChildren().add(m_vbox);
     }
 
-    public static void refresh() {
-        File[] v_files = Paths.HTML_FOLDER.listFiles((dir, name) -> name.endsWith(".html"));
-        if (v_files == null) return;
+    private ArrayList<TopicCard> m_cardsList = new ArrayList<>();
+    private File[] m_files;
 
-        for (File v_file : v_files) {
-            boolean v_temp = false;
+    private void makeFilesArray() {
+        m_files = Paths.HTML_FOLDER.listFiles((dir, name) -> name.endsWith(".html"));
+    }
+
+    private void initCards() {
+        makeFilesArray();
+        if (m_files == null) return;
+
+        for (File v_file : m_files) {
             String v_fileName = v_file.getName();
-            for (TopicCard v_card : CARDS_LIST) {
-                if (v_fileName.equals(v_card.m_fileName)) {
-                    v_temp = true;
-                    break;
-                }
-            }
-            if (v_temp) continue;
 
             TopicCard v_card = new TopicCard(v_fileName);
-            CARDS_LIST.add(v_card);
-            TOPIC_PANE.getChildren().add(v_card);
-
+            m_cardsList.add(v_card);
+            m_topicsPane.getChildren().add(v_card);
         }
     }
 
-    public static void clear() {
-        CARDS_LIST.clear();
-        TOPIC_PANE.getChildren().clear();
+    public void loadHtml() {
+        makeFilesArray();
+        if (m_files == null) return;
+
+        Set<String> v_existingNames = m_cardsList.stream()
+                .map(topicCard -> topicCard.m_fileName)
+                .collect(Collectors.toSet());
+
+        for (File v_file : m_files) {
+            String v_fileName = v_file.getName();
+            if (v_existingNames.contains(v_fileName)) continue;
+
+            TopicCard v_card = new TopicCard(v_fileName);
+            m_cardsList.add(v_card);
+            m_topicsPane.getChildren().add(v_card);
+        }
+    }
+
+    public void unloadHtml() {
+        m_cardsList.clear();
+        m_topicsPane.getChildren().clear();
     }
 }

@@ -13,6 +13,8 @@ module com.example.gabrielm {
     requires com.ibm.icu;
     requires openhtmltopdf.core;
     requires java.logging;
+    requires java.desktop;
+    requires static lombok;
 
     opens com.example.gabrielm to javafx.fxml;
     exports com.example.gabrielm;

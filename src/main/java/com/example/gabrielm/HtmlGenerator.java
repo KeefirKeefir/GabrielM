@@ -23,21 +23,27 @@ public class HtmlGenerator {
         Parser v_parser = Parser.builder().build();
         HtmlRenderer v_renderer = HtmlRenderer.builder().build();
 
-        String v_commentRegex = "<!--|-->";
-        Pattern v_pattern = Pattern.compile(v_commentRegex);
-
         for (File v_file : v_files) {
             try {
                 String v_fileName = v_file.getName();
                 String v_fileNameNoExtension = v_fileName.substring(0, v_fileName.lastIndexOf('.'));
                 String v_markdown = Files.readString(v_file.toPath());
 
+                v_markdown = v_markdown
+                        .replaceAll("\\[\\[\\[", "<!--\\$")
+                        .replaceAll("\\]\\]\\]", "\\$-->")
+                        .replaceAll("\\[\\[", "<!--")
+                        .replaceAll("\\]\\]", "-->");
+
                 String v_htmlContent = v_renderer.render(v_parser.parse(v_markdown));
 
-                Matcher v_matcher = v_pattern.matcher(v_htmlContent);
-                String v_htmlBody = v_matcher.replaceAll("");
+                v_htmlContent = v_htmlContent
+                        .replaceAll("<!--\\$", "\\$\\$")
+                        .replaceAll("\\$-->", "\\$\\$")
+                        .replaceAll("<!--", "\\$")
+                        .replaceAll("-->", "\\$");
 
-                String v_htmlOutput = HTML_HEAD + v_htmlBody + HTML_TAIL;
+                String v_htmlOutput = HTML_HEAD + v_htmlContent + HTML_TAIL;
 
                 if (!Paths.HTML_FOLDER.exists()) {
                     Paths.HTML_FOLDER.mkdirs();

@@ -53,12 +53,8 @@ public class Paths {
     }
 
     public static void init() {
-        if (DEVMODE) {
-            setPathsDev();
-        }
-        else {
-            setPathsProd();
-        }
+        if (DEVMODE) setPathsDev();
+        else setPathsProd();
         refreshFolderPaths();
     }
 

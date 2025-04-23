@@ -11,8 +11,8 @@ public class TopicCard extends VBox {
     Image m_image;
     ImageView m_imageView;
     Button m_button;
-    Text m_title;
-    String m_fileName;
+    public Text m_title;
+    public String m_fileName;
 
     public TopicCard(String i_fileName) {
         super(20);
@@ -28,12 +28,12 @@ public class TopicCard extends VBox {
         m_title = new Text(v_fileNameNoExtension);
 
         m_button = new Button();
-            m_button.getStyleClass().add("topic-button");
-            m_button.setGraphic(m_imageView);
-            m_button.setOnAction(actionEvent -> {
-                S_Topic.loadHtmlContent(m_fileName);
-                SceneChanger.change(S_Topic.SCENE);
-            });
+        m_button.getStyleClass().add("topic-button");
+        m_button.setGraphic(m_imageView);
+        m_button.setOnAction(actionEvent -> {
+            Views.TOPIC.loadHtmlContent(m_fileName);
+            Views.change(Views.TOPIC);
+        });
 
         this.getChildren().addAll(m_button, m_title);
         this.setAlignment(Pos.CENTER);
